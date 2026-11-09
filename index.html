@@ -124,6 +124,7 @@ body.introducing .shackle { animation-play-state:paused; }
 .diag-actions{display:flex;gap:12px;margin-top:20px}.diag-actions button{flex:1;min-height:48px;border:1px solid #d9b7c4;border-radius:12px;background:white;color:#5b4650;font:inherit;font-weight:700;cursor:pointer}.diag-actions button:first-child{background:#ef86a6;color:#fff;border-color:#ef86a6}
 .diag-back{border:0;background:transparent;color:#775e69;text-decoration:underline;padding:12px 0;font:inherit;font-size:13px;cursor:pointer}.diag-result{padding:16px;border-radius:12px;border-left:4px solid var(--diag-color,#ee86a6);background:white}.diag-number{font-weight:700;color:var(--diag-color,#c25b80)}
 @media(prefers-reduced-motion:no-preference){.diag-view{animation:diag-in .2s ease-out}@keyframes diag-in{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}}
+.diag-chart-link{display:block;margin-top:20px;padding:14px 16px;border:1px solid #d9b7c4;border-radius:12px;background:#fff;color:#775066;text-align:center;text-decoration:none;font-weight:700;font-size:15px}.diag-chart-link:hover{background:#fceef3}.diag-chart-link:focus-visible{outline:3px solid #c25b80;outline-offset:3px}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs id="gemdefs">
@@ -157,10 +158,11 @@ body.introducing .shackle { animation-play-state:paused; }
   </section>
 
   <section class="diagnosis" aria-labelledby="diagnosis-title">
-    <h2 id="diagnosis-title">次の1投稿、何を変える？</h2>
+    <h2 id="diagnosis-title">仮説検証パターンを診断する</h2>
     <p>数字で弱いところを見つけて、改善策を診断できます。</p>
     <div id="diag-view" aria-live="polite" aria-atomic="true"></div>
     <p>数字は目安です。違和感があれば選び直してOK。複数当てはまるときは、一番強く「Yes」と思うものを1つ選びます。1投稿で変えるのは1か所です。</p>
+    <a class="diag-chart-link" href="diagnosis-chart.png" target="_blank" rel="noopener" aria-label="診断チャートを開く（別タブ）">診断チャートを開く</a>
   </section>
 
   <a class="cta" id="cta" href="#" rel="noopener">投稿したら「実施報告」</a>
