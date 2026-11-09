@@ -323,7 +323,7 @@ const GIRL = "1115,1021 1125,880 1180,790 1240,740 1255,690 1285,610 1370,588 14
     const xr = Math.min(extentRight(y) + 28, y > 560 ? 1100 : 1500);
     const x0 = 546;
     const ink = reached ? '#fff' : '#6a6573';
-    const reward = m === 100 ? '特別生放送 第2回' : m === 240 ? '？？？が開く' : '？？？？？';
+    const reward = m === 100 ? '特別生放送' : m === 240 ? '？？？が開く' : '？？？？？';
     const lock = m === 100 ? '' : '<g class="reward-lock" transform="translate(105 ' + (y + 12) + ')" fill="none" stroke="' + ink + '" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><rect x="-16" y="0" width="32" height="25" rx="5"/><path class="shackle" d="M-10 0v-10a10 10 0 0 1 20 0v10"/><path d="M0 10v5"/></g>';
     marks += '<g class="milestone' + (reached ? ' reached' : '') + '" data-goal="' + m + '" aria-label="' + m + '本：' + reward + (m === 100 ? '' : reached ? '（開錠）' : '（施錠）') + '">' +
       '<line x1="' + x0 + '" x2="' + xr + '" y1="' + y + '" y2="' + y + '" stroke="#f08ab0" stroke-opacity=".55" stroke-width="9" stroke-linecap="round" filter="url(#glint)"/>' +
