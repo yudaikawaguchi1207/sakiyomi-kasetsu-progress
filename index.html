@@ -117,6 +117,13 @@ body.introducing { overflow:hidden; }
 @keyframes reward-unlock { from { transform:translateY(0) rotate(0); } to { transform:translateY(-7px) rotate(-32deg); } }
 body.introducing .shackle { animation-play-state:paused; }
 @media(prefers-reduced-motion:reduce) { .milestone.reached .shackle { animation:none; transform:translateY(-7px) rotate(-32deg); } }
+
+.diagnosis{padding:24px 20px;border:1px solid #f1dce4;border-radius:20px;background:#fffafc;text-align:left}
+.diagnosis h2{margin:0 0 8px;font-size:22px}.diagnosis p{line-height:1.8;margin:8px 0;font-size:14px}
+.diag-step{font-size:12px;font-weight:700;color:#a15e79;letter-spacing:.06em}.diag-question{font-size:19px!important;font-weight:700;line-height:1.7!important}
+.diag-actions{display:flex;gap:12px;margin-top:20px}.diag-actions button{flex:1;min-height:48px;border:1px solid #d9b7c4;border-radius:12px;background:white;color:#5b4650;font:inherit;font-weight:700;cursor:pointer}.diag-actions button:first-child{background:#ef86a6;color:#fff;border-color:#ef86a6}
+.diag-back{border:0;background:transparent;color:#775e69;text-decoration:underline;padding:12px 0;font:inherit;font-size:13px;cursor:pointer}.diag-result{padding:16px;border-radius:12px;border-left:4px solid var(--diag-color,#ee86a6);background:white}.diag-number{font-weight:700;color:var(--diag-color,#c25b80)}
+@media(prefers-reduced-motion:no-preference){.diag-view{animation:diag-in .2s ease-out}@keyframes diag-in{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs id="gemdefs">
@@ -149,6 +156,13 @@ body.introducing .shackle { animation-play-state:paused; }
     <ul class="legend" id="legend"></ul>
   </section>
 
+  <section class="diagnosis" aria-labelledby="diagnosis-title">
+    <h2 id="diagnosis-title">次の1投稿、何を変える？</h2>
+    <p>数字で弱いところを見つけて、改善策を診断できます。</p>
+    <div id="diag-view" aria-live="polite" aria-atomic="true"></div>
+    <p>数字は目安です。違和感があれば選び直してOK。複数当てはまるときは、一番強く「Yes」と思うものを1つ選びます。1投稿で変えるのは1か所です。</p>
+  </section>
+
   <a class="cta" id="cta" href="#" rel="noopener">投稿したら「実施報告」</a>
   <p class="foot">数字は毎日更新されます</p>
 </div>
@@ -170,7 +184,7 @@ document.body.classList.add('introducing');
 /* ここの数字だけ書き換えれば、光る宝石の数と表示が変わる */
 const DATA = {
   "asOf": "11/9 時点",
-  "total": 9,
+  "total": 10,
   "goal": 340,
   "tenk": 1,
   "perGoal": 28,
@@ -210,7 +224,7 @@ const DATA = {
       "no": 6,
       "g": "pink",
       "text": "見る人が答えを考えたくなる問いや選択肢で始める",
-      "count": 1
+      "count": 2
     },
     {
       "no": 7,
@@ -393,4 +407,42 @@ if (vacant.length) {
   v.innerHTML = '<b>まだ誰も試していません：</b>' + vacant.join("・") + '番。最初の1本になれるチャンスです';
   v.hidden = false;
 }
+
+// 添付の診断チャートの分岐と改善策番号を保持する。
+const DIAG_QUESTIONS = {
+ start:{text:'スキップ率は、50%以上？',yes:'q1',no:'time'},
+ time:{text:'平均再生時間は、動画の長さの半分より短い？',yes:'q8',no:'q10'},
+ q1:{text:'音を消して冒頭3秒を見ると、目が止まる動きや出来事がない？',yes:2,no:'q2'},
+ q2:{text:'音を消して冒頭を見ても、誰のどんな困りごとか分からない？',yes:1,no:'q3'},
+ q3:{text:'画面を見ずに冒頭3秒の音だけ聞いても、何が起きたか分からない？',yes:3,no:'q4'},
+ q4:{text:'冒頭の文字を読んで、「私のことだ」と思う言葉がない？',yes:4,no:'q5'},
+ q5:{text:'見ると何が得か、見ないと何を損するかが具体的でない？',yes:5,no:'q6'},
+ q6:{text:'冒頭を読んだ時点で、答えが予想できてしまう？',yes:6,no:'q7'},
+ q7:{text:'最初の3秒だけ見ても、誰がどんな立場で話しているか言えない？',yes:7,no:'help'},
+ q8:{text:'何がどの順で出てくる動画か、見ていて分からない？',yes:8,no:'q9'},
+ q9:{text:'何をしたかは分かるが、どう感じたか・一緒に体験している感じがない？',yes:9,no:'help'},
+ q10:{text:'直近の投稿に、過去に伸びた投稿と共通する要素が一つもない？',yes:10,no:'q11'},
+ q11:{text:'同じテーマで他の人が投稿しても、ほぼ同じ内容になる？',yes:11,no:'q12'},
+ q12:{text:'誰の・どんな場面の悩みに答える投稿か、ひと言で言えない？',yes:12,no:'help'}
+};
+let diagNode='start';const diagHistory=[];
+function renderDiagnosis(){
+ const view=$('diag-view');view.className='diag-view';
+ const group=typeof diagNode==='string'&&/^q[1-7]$/.test(diagNode)?'冒頭':/^q[89]$/.test(diagNode)?'構成':/^q1[012]$/.test(diagNode)?'企画':'';
+ if(typeof diagNode==='number'){
+  const item=DATA.items.find(it=>it.no===diagNode);
+  view.innerHTML='<div class="diag-result" style="--diag-color:'+EDGE[item.g]+'"><p class="diag-number">試す改善策：'+item.no+'番</p><p class="diag-question">'+esc(item.text)+'</p></div><p>次の投稿では、この1か所を変えてみましょう。</p>';
+ }else if(diagNode==='help'){
+  view.innerHTML='<div class="diag-result"><p class="diag-question">迷ったら、仮説検証FBサービスへ</p><p>仮説検証FBサービスは近日公開予定です。</p></div><p>自分の課題がはっきりしている人は、診断を使わずに改善策を選んでもOKです。</p>';
+ }else{
+  const q=DIAG_QUESTIONS[diagNode];
+  view.innerHTML='<p class="diag-step">'+(group?'STEP 2　'+group+'のチェック':'STEP 1　Instagramのインサイトを開く')+'</p><p class="diag-question" id="diag-question">'+esc(q.text)+'</p>'+(diagNode==='start'?'<p>スキップ率は低いほど、冒頭が良い状態です。</p>':'')+'<div class="diag-actions" role="group" aria-labelledby="diag-question"><button type="button" data-answer="yes">Yes</button><button type="button" data-answer="no">No</button></div>';
+  view.querySelectorAll('[data-answer]').forEach(b=>b.onclick=()=>{diagHistory.push(diagNode);diagNode=q[b.dataset.answer];renderDiagnosis();});
+ }
+ if(diagHistory.length){
+  const back=document.createElement('button');back.type='button';back.className='diag-back';back.textContent='1つ前に戻る';back.onclick=()=>{diagNode=diagHistory.pop();renderDiagnosis()};view.append(back);
+  const reset=document.createElement('button');reset.type='button';reset.className='diag-back';reset.style.marginLeft='20px';reset.textContent='最初から診断する';reset.onclick=()=>{diagNode='start';diagHistory.length=0;renderDiagnosis()};view.append(reset);
+ }
+}
+renderDiagnosis();
 </script>
