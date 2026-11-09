@@ -1,0 +1,358 @@
+<title>みんなの進捗ゲージ</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@700;800&family=Zen+Maru+Gothic:wght@500;700;900&display=swap">
+<style>
+/* 11月仮説検証キャンペーンCRのトンマナ（淡いピンクの水彩地・半透明の虹色クリスタル・コーラルの差し色）。
+   1画面目＝340個の宝石の山。実施1本につき1粒が光る／2画面目＝12個のガラス瓶。実施1本につき1粒たまり、28粒で満杯。
+   冒頭=ピンク／構成=ブルー／企画=グリーンは診断チャートと同じ。明るい1テーマで完結 */
+:root {
+  --bg: #fdf3f6;
+  --ink: #20202a;
+  --ink-sub: #6a6573;
+  --coral: #f0506e;
+  --coral-deep: #d63a5a;
+  --card: #ffffffcc;
+  --line: #f3d6de;
+  --pink: #f0607f;
+  --blue: #2f93e0;
+  --green: #4bb04a;
+  --font-display: "Shippori Mincho B1", "Hiragino Mincho ProN", "Yu Mincho", serif;
+  --font-body: "Zen Maru Gothic", "Hiragino Maru Gothic ProN", "Hiragino Sans", sans-serif;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background:
+    radial-gradient(60% 34% at 8% 3%, #ffd9e6 0, transparent 70%),
+    radial-gradient(50% 30% at 96% 8%, #d9e9ff 0, transparent 70%),
+    radial-gradient(60% 26% at 70% 96%, #fff0c9 0, transparent 70%),
+    var(--bg);
+  background-color: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.55;
+  padding-block: 16px 40px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap { max-width: 640px; margin: 0 auto; display: grid; gap: 26px; }
+.wrap > * { min-width: 0; }
+
+/* ヘッダー */
+.brand { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-weight: 900; font-size: 13px; }
+.brand .tag { background: var(--coral); color: #fff; border-radius: 999px; padding: 2px 11px; font-size: 12px; }
+h1 { font-family: var(--font-display); font-weight: 800; font-size: clamp(22px, 6.4vw, 34px); line-height: 1.2; margin: 6px 0 0; text-wrap: balance; }
+h1 em { font-style: normal; color: var(--coral); }
+.asof { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; color: var(--ink-sub); font-size: 12.5px; font-weight: 700; margin-top: 2px; }
+.asof .demo { border: 1.5px dashed var(--coral); color: var(--coral-deep); border-radius: 999px; padding: 0 9px; font-size: 11.5px; }
+
+/* 1画面目：宝石の山 */
+.hero { display: grid; justify-items: center; gap: 4px; text-align: center; }
+.score { display: flex; align-items: baseline; justify-content: center; gap: 6px; line-height: 1; }
+.score .num { font-family: var(--font-display); font-weight: 800; font-size: clamp(60px, 18vw, 88px); color: var(--coral); font-variant-numeric: tabular-nums; }
+.score .of { font-family: var(--font-display); font-weight: 800; font-size: clamp(24px, 7vw, 34px); color: var(--ink); font-variant-numeric: tabular-nums; }
+.score .of small { font-family: var(--font-body); font-size: 15px; font-weight: 900; margin-left: 2px; }
+.remain { font-weight: 900; font-size: 14px; color: var(--ink-sub); }
+.remain b { color: var(--coral-deep); font-variant-numeric: tabular-nums; }
+.illu { width: 100%; max-width: 640px; height: auto; display: block; overflow: hidden; border-radius: 22px; margin-top: 4px; box-shadow: 0 14px 40px #c9a8f544; background: #fff; }
+.cap { margin: 0; color: var(--ink-sub); font-size: 12.5px; font-weight: 700; }
+.chip { display: inline-flex; gap: 8px; align-items: baseline; background: #fff; border: 1px solid var(--line); border-radius: 999px; padding: 3px 14px; font-size: 13px; font-weight: 700; color: var(--ink-sub); }
+.chip b { font-family: var(--font-display); font-size: 18px; color: var(--ink); font-variant-numeric: tabular-nums; }
+
+/* 2画面目：12個のガラス瓶 */
+.sec-head { display: grid; gap: 2px; }
+.sec-head h2 { font-family: var(--font-display); font-weight: 800; font-size: 24px; margin: 0; }
+.sec-head p { margin: 0; color: var(--ink-sub); font-size: 13px; font-weight: 700; }
+.panel { background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 16px 10px 14px; box-shadow: 0 6px 24px #f0506e14; }
+.cols { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 3px; align-items: end; }
+.col { display: grid; gap: 4px; justify-items: center; }
+.col .n { font-family: var(--font-display); font-weight: 800; font-size: 17px; line-height: 1; font-variant-numeric: tabular-nums; }
+.col .n.zero { color: #b9a9b1; }
+.col svg { width: 100%; height: auto; display: block; overflow: visible; }
+.col .no { font-size: 11px; font-weight: 900; color: var(--ink-sub); font-variant-numeric: tabular-nums; }
+.col.g-pink .n:not(.zero) { color: var(--pink); }
+.col.g-blue .n:not(.zero) { color: var(--blue); }
+.col.g-green .n:not(.zero) { color: var(--green); }
+.tags { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 3px; margin-top: 6px; }
+.tags span { text-align: center; font-weight: 900; font-size: 12px; color: #fff; border-radius: 8px; padding: 1px 0; white-space: nowrap; }
+.tags .g-pink { background: var(--pink); grid-column: span 7; }
+.tags .g-blue { background: var(--blue); grid-column: span 2; }
+.tags .g-green { background: var(--green); grid-column: span 3; }
+.vacant { margin: 10px 0 0; background: #fff; border: 1.5px solid var(--coral); border-radius: 14px; padding: 9px 12px; font-size: 13.5px; font-weight: 700; }
+.vacant b { color: var(--coral-deep); }
+
+/* 凡例 */
+.legend { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.legend li { display: flex; gap: 10px; align-items: center; background: #ffffffd9; border-radius: 12px; padding: 8px 12px; font-size: 13.5px; font-weight: 700; }
+.legend .no { flex: none; width: 24px; height: 24px; border-radius: 50%; color: #fff; font-weight: 900; font-size: 12.5px; display: grid; place-items: center; }
+.legend .txt { flex: 1; min-width: 0; line-height: 1.4; }
+.legend .c { flex: none; font-weight: 900; font-variant-numeric: tabular-nums; color: var(--ink-sub); }
+.legend .c b { font-family: var(--font-display); font-size: 18px; color: var(--ink); }
+.legend .zero .c b { color: #b9a9b1; }
+
+.cta { display: block; text-align: center; text-decoration: none; background: var(--coral); color: #fff; font-weight: 900; font-size: 17px; padding: 16px 18px; border-radius: 16px; box-shadow: 0 8px 20px #f0506e40; }
+.cta:focus-visible, .cta:hover { background: var(--coral-deep); outline: 3px solid #fff; outline-offset: -6px; }
+.foot { text-align: center; color: var(--ink-sub); font-size: 12.5px; font-weight: 700; margin: 0; }
+
+/* 宝石が1粒ずつ現れる */
+.pop { transform-box: fill-box; transform-origin: center; animation: pop .55s cubic-bezier(.2,.9,.3,1.3) both; }
+@keyframes pop { from { opacity: 0; transform: scale(.15); } to { opacity: 1; transform: scale(1); } }
+.twinkle { transform-box: fill-box; transform-origin: center; animation: twinkle 2.8s ease-in-out infinite; }
+@keyframes twinkle { 0%, 100% { opacity: .35; transform: scale(.7); } 50% { opacity: 1; transform: scale(1.15); } }
+@media (prefers-reduced-motion: reduce) { .pop, .twinkle { animation: none; } }
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs id="gemdefs">
+  <filter id="b8" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="14"/></filter>
+  <linearGradient id="glow" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#ffa9c6"/><stop offset=".4" stop-color="#c9b0ff"/><stop offset=".7" stop-color="#8fd0ff"/><stop offset="1" stop-color="#ffe3a3"/></linearGradient>
+</defs></svg>
+
+<div class="wrap">
+  <section class="hero" aria-label="全体の進捗">
+    <header style="justify-self: stretch; text-align: left">
+      <div class="brand"><span>SAKIYOMIスクール</span><span class="tag">目指せ1万×3回グループ</span></div>
+      <h1>11月 仮説検証キャンペーン <em>みんなの進捗</em></h1>
+      <div class="asof"><span id="asof"></span></div>
+    </header>
+    <div class="score"><span class="num" id="total">0</span><span class="of">／<span id="goal">340</span><small>本</small></span></div>
+    <div class="remain">あと <b id="remain"></b> 本で、イラストが全部色づきます</div>
+    <svg class="illu" id="illu" viewBox="0 0 1541 1021" role="img" aria-label="実施数に応じて色づく宝石のイラスト"></svg>
+    <p class="cap">実施1本ごとに、宝石のかけら（全340個）が下から1つずつ色づきます</p>
+    <span class="chip">1万再生 <b id="tenk"></b> 本</span>
+  </section>
+
+  <section style="display:grid; gap:12px" aria-label="改善策ごとの進捗">
+    <div class="sec-head"><h2>12個の改善策</h2><p>実施1本で1粒。<span id="per"></span>粒で瓶がいっぱいになります</p></div>
+    <div class="panel">
+      <div class="cols" id="cols"></div>
+      <div class="tags"><span class="g-pink">冒頭</span><span class="g-blue">構成</span><span class="g-green">企画</span></div>
+      <div class="vacant" id="vacant" hidden></div>
+    </div>
+    <ul class="legend" id="legend"></ul>
+  </section>
+
+  <a class="cta" id="cta" href="#" rel="noopener">投稿したら「実施報告」</a>
+  <p class="foot">数字は毎日更新されます</p>
+</div>
+
+<script>
+/* ここの数字だけ書き換えれば、光る宝石の数と表示が変わる */
+const DATA = {
+  "asOf": "11/9 時点",
+  "total": 9,
+  "goal": 340,
+  "tenk": 1,
+  "perGoal": 28,
+  "formUrl": "https://liff.line.me/2001781654-oVnZcwXJ?liff_id=2001781654-oVnZcwXJ&code=LFXBTC4X",
+  "items": [
+    {
+      "no": 1,
+      "g": "pink",
+      "text": "見る人が実際に困る場面を撮り、冒頭に置く",
+      "count": 3
+    },
+    {
+      "no": 2,
+      "g": "pink",
+      "text": "走る・画面に飛び込むなど大きな動きを冒頭用に撮る",
+      "count": 0
+    },
+    {
+      "no": 3,
+      "g": "pink",
+      "text": "冒頭の出来事に効果音や実音を重ねる",
+      "count": 0
+    },
+    {
+      "no": 4,
+      "g": "pink",
+      "text": "見る人がその場で自分の体や持ち物を確かめたくなる一言で始める",
+      "count": 0
+    },
+    {
+      "no": 5,
+      "g": "pink",
+      "text": "冒頭で、誰に向けた何が得られる内容かを一言で伝える",
+      "count": 3
+    },
+    {
+      "no": 6,
+      "g": "pink",
+      "text": "見る人が答えを考えたくなる問いや選択肢で始める",
+      "count": 1
+    },
+    {
+      "no": 7,
+      "g": "pink",
+      "text": "過去からの変化や大きな転機を、冒頭の一言で明かす",
+      "count": 0
+    },
+    {
+      "no": 8,
+      "g": "blue",
+      "text": "参考動画を一本に絞り、導入・展開・締めの型をまねる",
+      "count": 0
+    },
+    {
+      "no": 9,
+      "g": "blue",
+      "text": "公開できる苦労と、乗り越えた方法を一組入れる",
+      "count": 1
+    },
+    {
+      "no": 10,
+      "g": "green",
+      "text": "伸びた投稿の冒頭や構成を残し、題材だけ替えて出す",
+      "count": 1
+    },
+    {
+      "no": 11,
+      "g": "green",
+      "text": "普段は見えない準備や仕事の裏側を見せる",
+      "count": 0
+    },
+    {
+      "no": 12,
+      "g": "green",
+      "text": "初心者だった頃の自分が知りたかったことを題材にする",
+      "count": 0
+    }
+  ]
+};
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const rnd = (i) => { const x = Math.sin(i * 12.9898 + 4.1) * 43758.5453; return x - Math.floor(x); };
+
+$("asof").textContent = DATA.asOf + "の実施数";
+$("total").textContent = DATA.total;
+$("goal").textContent = DATA.goal;
+$("remain").textContent = Math.max(0, DATA.goal - DATA.total);
+$("tenk").textContent = DATA.tenk;
+$("per").textContent = DATA.perGoal;
+$("cta").href = DATA.formUrl;
+
+/* 宝石の部品。半透明の虹色クリスタル（5面＋白い縁と光の筋）。色違いを defs に登録して use で使い回す */
+const PALETTES = {
+  r0: ["#ffc0d8", "#bfeaff", "#ffe4ee", "#7fe3df", "#ffa9c9"],
+  r1: ["#fbd29a", "#ffe8b8", "#f4aaa6", "#fff1cf", "#ffc7a8"],
+  r2: ["#c9b9ff", "#9bcdfb", "#e9e1ff", "#b9c9ff", "#d6c8ff"],
+  r3: ["#bff0d6", "#ffd0e2", "#e3f9ee", "#a9e8d0", "#ffb8d3"],
+  r4: ["#a6ecee", "#d9c8ff", "#d4f6f6", "#8fd8f0", "#e9d7ff"],
+  r5: ["#f5e9a8", "#c9edaa", "#fff6c9", "#ffc7dc", "#dff5bd"],
+  pink: ["#ff8fb0", "#ffd3e1", "#f25c8a", "#ffe9f0", "#ffb3cb"],
+  blue: ["#72b8f5", "#cfe8fc", "#3f8fe0", "#e8f4ff", "#9ccdfa"],
+  green: ["#7fd084", "#d9f2d0", "#4bb04a", "#eef9e8", "#a5de9f"]
+};
+const FACETS = ["0,-12 9,-5 0,-1", "0,-12 0,-1 -9,-5", "-9,-5 0,-1 -7,8", "9,-5 7,8 0,-1", "0,-1 7,8 0,12 -7,8"];
+const OUT = "0,-12 9,-5 7,8 0,12 -7,8 -9,-5";
+let defs = "";
+Object.keys(PALETTES).forEach((k) => {
+  defs += '<g id="gem-' + k + '">' + FACETS.map((p, i) => '<polygon points="' + p + '" fill="' + PALETTES[k][i] + '" fill-opacity=".92"/>').join("") +
+    '<polygon points="' + OUT + '" fill="none" stroke="#fff" stroke-opacity=".8" stroke-width=".7" stroke-linejoin="round"/>' +
+    '<path d="M0 -12L0 -1M-9 -5L0 -1L9 -5M0 -1L-7 8M0 -1L7 8" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width=".5"/>' +
+    '<polygon points="-4,-8 0,-11 2,-6" fill="#fff" fill-opacity=".7"/></g>';
+});
+defs += '<g id="gem-ghost"><polygon points="' + OUT + '" fill="#fff" fill-opacity=".4" stroke="#e5cfe3" stroke-width=".7" stroke-linejoin="round"/>' +
+  '<path d="M0 -12L0 -1M-9 -5L0 -1L9 -5M0 -1L-7 8M0 -1L7 8" fill="none" stroke="#ecdcea" stroke-width=".45"/></g>';
+$("gemdefs").insertAdjacentHTML("beforeend", defs);
+
+/* 1画面目：イラストの宝石を340個のかけらに分け、実施1本ごとに1かけら、淡い状態から元の色に戻す。
+   女の子は最初から色つき。色づく順番は、下から上へ */
+const CELLS = [[746,880],[770,838],[722,838],[818,838],[674,838],[746,796],[794,796],[891,796],[843,796],[650,796],[770,754],[698,796],[722,754],[602,796],[818,754],[578,754],[626,754],[867,754],[674,754],[963,754],[698,712],[915,754],[939,712],[530,754],[746,712],[794,712],[650,712],[1035,712],[891,712],[843,712],[506,712],[602,712],[987,712],[674,670],[554,712],[915,670],[457,712],[818,670],[770,670],[722,670],[867,670],[578,670],[626,670],[794,628],[963,670],[1107,670],[939,628],[481,670],[530,670],[1011,670],[650,628],[1059,670],[433,670],[746,628],[698,628],[987,628],[891,628],[843,628],[554,628],[602,628],[506,628],[409,628],[1035,628],[1131,628],[361,628],[915,586],[457,628],[530,586],[1180,628],[722,586],[1059,586],[770,586],[1083,628],[1011,586],[626,586],[674,586],[481,586],[867,586],[963,586],[818,586],[794,545],[578,586],[433,586],[843,545],[337,586],[1204,586],[1107,586],[939,545],[746,545],[602,545],[1155,586],[289,586],[385,586],[554,545],[1180,545],[1083,545],[650,545],[698,545],[409,545],[891,545],[457,545],[1035,545],[987,545],[506,545],[1228,545],[361,545],[626,503],[265,545],[867,503],[674,503],[313,545],[1011,503],[1131,545],[963,503],[770,503],[722,503],[915,503],[530,503],[818,503],[794,461],[578,503],[698,461],[1059,503],[433,503],[289,503],[939,461],[241,503],[481,503],[385,503],[1300,503],[843,461],[1107,503],[891,461],[746,461],[602,461],[1204,503],[1155,503],[337,503],[650,461],[554,461],[1035,461],[457,461],[1228,461],[987,461],[1252,503],[1180,461],[506,461],[1083,461],[867,419],[217,461],[1276,461],[409,461],[770,419],[722,419],[481,419],[1131,461],[674,419],[361,461],[818,419],[265,461],[915,419],[530,419],[1059,419],[1324,461],[578,419],[843,377],[313,461],[626,419],[169,461],[698,377],[650,377],[385,419],[746,377],[963,419],[1011,419],[794,377],[193,419],[891,377],[506,377],[1107,419],[1204,419],[289,419],[554,377],[1300,419],[602,377],[337,419],[1155,419],[433,419],[1252,419],[457,377],[241,419],[1348,419],[1180,377],[1228,377],[867,335],[939,377],[1035,377],[915,335],[361,377],[1276,377],[818,335],[626,335],[1083,377],[770,335],[1131,377],[987,377],[144,419],[1011,335],[313,377],[169,377],[409,377],[481,335],[722,335],[217,377],[433,335],[1107,335],[674,335],[746,293],[265,377],[698,293],[1372,377],[530,335],[578,335],[289,335],[1324,377],[843,293],[939,293],[963,335],[1059,335],[602,293],[891,293],[1252,335],[1300,335],[241,335],[987,293],[1396,335],[1204,335],[794,293],[385,335],[1155,335],[337,335],[722,251],[409,293],[1131,293],[554,293],[457,293],[818,251],[674,251],[650,293],[1348,335],[1083,293],[193,335],[313,293],[506,293],[626,251],[578,251],[1228,293],[963,251],[1180,293],[770,251],[867,251],[915,251],[1276,293],[361,293],[385,251],[843,209],[1372,293],[1155,251],[265,293],[433,251],[1420,293],[530,251],[1252,251],[891,209],[1324,293],[217,293],[698,209],[1107,251],[506,209],[481,251],[1348,251],[602,209],[1204,251],[794,209],[1300,251],[746,209],[1396,251],[987,209],[457,209],[650,209],[409,209],[1228,209],[554,209],[939,209],[770,168],[1180,209],[915,168],[867,168],[722,168],[674,168],[818,168],[481,168],[1372,209],[578,168],[1131,209],[1276,209],[530,168],[433,168],[626,168],[891,126],[843,126],[1324,209],[602,126],[963,168],[794,126],[1011,168],[746,126],[1035,126],[1300,168],[457,126],[1083,126],[1252,168],[1204,168],[987,126],[698,126],[554,126],[650,126],[674,84],[506,126],[867,84],[626,84],[1107,84],[578,84],[530,84],[1011,84],[1155,84],[1059,84],[1083,42],[1131,42],[1180,42]];
+const CELL_R = 30;
+const GIRL = "1115,1021 1125,880 1180,790 1240,740 1255,690 1285,610 1370,588 1447,640 1445,700 1425,770 1500,880 1541,930 1541,1021";
+(function () {
+  const svg = $("illu");
+  const n = Math.min(DATA.total, CELLS.length);
+  let circles = "", stars = "";
+  CELLS.slice(0, n).forEach((p, i) => {
+    circles += '<circle class="pop" style="animation-delay:' + (i * 110) + 'ms" cx="' + p[0] + '" cy="' + p[1] + '" r="' + CELL_R + '" fill="#fff"/>';
+    const big = i === n - 1 ? 1.5 : 1;
+    stars += '<path class="twinkle" style="animation-delay:' + ((i * 370) % 2800) + 'ms" transform="translate(' + p[0] + " " + p[1] + ") scale(" + big + ')" d="M0 -40L9 -9L40 0L9 9L0 40L-9 9L-40 0L-9 -9Z" fill="#fff"/>';
+  });
+  /* 100・240・340本の水位ライン。細い点線＋淡いにじみ、左端に小さなラベル。届いたラインは色づく */
+  const CRYSTAL = [[340,262],[455,112],[560,58],[615,52],[735,98],[835,98],[872,58],[905,125],[925,150],[1010,60],[1130,6],[1200,28],[1175,75],[1005,205],[1010,320],[1130,195],[1245,135],[1370,205],[1455,282],[1385,445],[1190,622],[1010,745],[925,792],[750,900],[540,760],[415,692],[290,600],[130,430],[215,257],[320,290]];
+  const extentRight = (y) => {
+    let best = null;
+    for (let i = 0; i < CRYSTAL.length; i++) {
+      const a = CRYSTAL[i], b = CRYSTAL[(i + 1) % CRYSTAL.length];
+      if ((a[1] > y) !== (b[1] > y)) { const x = a[0] + (b[0] - a[0]) * (y - a[1]) / (b[1] - a[1]); if (best === null || x > best) best = x; }
+    }
+    return best === null ? 1100 : best;
+  };
+  const avgY = (m) => { const part = CELLS.slice(Math.max(0, m - 4), Math.min(CELLS.length, m + 1)); return part.reduce((a, p) => a + p[1], 0) / part.length; };
+  const topY = Math.min.apply(null, CELLS.map((p) => p[1])) - 26;
+  let marks = "";
+  [100, 240, 340].forEach((m) => {
+    const y = Math.round(m >= CELLS.length ? Math.max(topY, 64) : avgY(m));
+    const reached = DATA.total >= m;
+    const xr = Math.min(extentRight(y) + 28, y > 560 ? 1100 : 1500);
+    const x0 = 262;
+    marks += '<g>' +
+      '<line x1="' + x0 + '" x2="' + xr + '" y1="' + y + '" y2="' + y + '" stroke="#f08ab0" stroke-opacity=".55" stroke-width="9" stroke-linecap="round" filter="url(#glint)"/>' +
+      '<line x1="' + x0 + '" x2="' + xr + '" y1="' + y + '" y2="' + y + '" stroke="#fff" stroke-opacity=".95" stroke-width="3.2" stroke-dasharray="2 16" stroke-linecap="round"/>' +
+      '<rect x="18" y="' + (y - 40) + '" width="236" height="80" rx="40" fill="' + (reached ? "#f0506e" : "#ffffffe6") + '" stroke="' + (reached ? "#ffffff" : "#f0b8cb") + '" stroke-width="3"/>' +
+      '<text x="136" y="' + (y + 19) + '" text-anchor="middle" font-size="52" font-weight="900" fill="' + (reached ? "#fff" : "#6a6573") + '" style="font-family:var(--font-body)">' + m + '本</text></g>';
+  });
+
+  svg.innerHTML =
+    '<defs><clipPath id="crystal-only"><polygon points="' + CRYSTAL.map(p => p.join(',')).join(' ') + '"/></clipPath>' +
+    '<filter id="pale" color-interpolation-filters="sRGB"><feColorMatrix type="saturate" values=".1"/><feComponentTransfer><feFuncR type="linear" slope=".8" intercept=".18"/><feFuncG type="linear" slope=".8" intercept=".18"/><feFuncB type="linear" slope=".8" intercept=".18"/></feComponentTransfer></filter>' +
+    '<filter id="soft" filterUnits="userSpaceOnUse" x="0" y="0" width="1541" height="1021"><feGaussianBlur stdDeviation="13"/></filter>' +
+    '<mask id="reveal" maskUnits="userSpaceOnUse" x="0" y="0" width="1541" height="1021"><rect width="1541" height="1021" fill="#000"/>' +
+    '<g filter="url(#soft)"><polygon points="' + GIRL + '" fill="#fff"/>' + circles + '</g></mask>' +
+    '<filter id="glint" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="3"/></filter></defs>' +
+    '<image href="hero.jpg" width="1541" height="1021"/>' +
+    '<image href="hero.jpg" width="1541" height="1021" filter="url(#pale)" clip-path="url(#crystal-only)"/>' +
+    '<image href="hero.jpg" width="1541" height="1021" mask="url(#reveal)" clip-path="url(#crystal-only)"/>' +
+    '<g clip-path="url(#crystal-only)" filter="url(#glint)">' + stars + '</g>' + marks;
+})();
+
+/* 2画面目：12個のガラス瓶。実施1本につき、その色の宝石が1粒たまる（28粒で満杯） */
+const cols = $("cols"), legend = $("legend");
+const EDGE = { pink: "#ee86a6", blue: "#6fb2ee", green: "#78c577" };
+const GLASS = "M3 4H41L37 188Q36 197 28 197H16Q8 197 7 188Z";
+function slotPos(i) {
+  const row = Math.floor(i / 2), side = i % 2;
+  return { x: (side ? 29.5 : 14.5) + (rnd(i + 7) - 0.5) * 1.6, y: 184 - row * 12.4 - (side ? 5.5 : 0) };
+}
+function glass(count, g) {
+  let s = '<path d="' + GLASS + '" fill="#fff" fill-opacity=".55"/>';
+  const cap = DATA.perGoal;
+  for (let i = count; i < cap; i++) {
+    const p = slotPos(i);
+    s += '<g transform="translate(' + p.x.toFixed(1) + " " + p.y.toFixed(1) + ') scale(.62)" opacity=".55"><use href="#gem-ghost"/></g>';
+  }
+  for (let i = 0; i < Math.min(count, cap); i++) {
+    const p = slotPos(i), rot = (rnd(i + 31) - 0.5) * 34;
+    s += '<g transform="translate(' + p.x.toFixed(1) + " " + p.y.toFixed(1) + ") rotate(" + rot.toFixed(1) + ') scale(.78)"><use class="pop" style="animation-delay:' + (300 + i * 70) + 'ms" href="#gem-' + g + '"/></g>';
+  }
+  s += '<path d="' + GLASS + '" fill="#fff" fill-opacity=".1" stroke="#d9c3da" stroke-width=".9" stroke-linejoin="round"/>' +
+    '<rect x="6.5" y="14" width="2.4" height="150" rx="1.2" fill="#fff" opacity=".75"/>' +
+    '<path d="M3 4H41" stroke="#e6d3e4" stroke-width="1.4" stroke-linecap="round"/>';
+  return s;
+}
+DATA.items.forEach((it) => {
+  const col = document.createElement("div");
+  col.className = "col g-" + it.g;
+  col.innerHTML = '<span class="n' + (it.count === 0 ? " zero" : "") + '">' + it.count + '</span>' +
+    '<svg viewBox="0 0 44 200" role="img" aria-label="' + it.no + '番 ' + it.count + '本 / ' + DATA.perGoal + '本">' + glass(it.count, it.g) + '</svg>' +
+    '<span class="no">' + it.no + '</span>';
+  cols.appendChild(col);
+
+  const li = document.createElement("li");
+  if (it.count === 0) li.className = "zero";
+  li.innerHTML = '<span class="no" style="background:' + EDGE[it.g] + '">' + it.no + '</span><span class="txt">' + esc(it.text) +
+    '</span><span class="c"><b>' + it.count + '</b> ／ ' + DATA.perGoal + '</span>';
+  legend.appendChild(li);
+});
+
+const vacant = DATA.items.filter((it) => it.count === 0).map((it) => it.no);
+if (vacant.length) {
+  const v = $("vacant");
+  v.innerHTML = '<b>まだ誰も試していません：</b>' + vacant.join("・") + '番。最初の1本になれるチャンスです';
+  v.hidden = false;
+}
+</script>
