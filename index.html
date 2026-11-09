@@ -104,7 +104,8 @@ h1 em { font-style: normal; color: var(--coral); }
 
 /* 添付の告知画像から、進捗へ一度だけつなぐ。読み込み失敗時も閉じる。 */
 .intro { position:fixed; inset:0; z-index:100; display:grid; place-items:center; background:#fff7fa; overflow:hidden; transition:opacity .65s ease,visibility .65s; }
-.intro img { width:min(100%,800px); height:auto; max-height:92dvh; object-fit:contain; animation:intro-drift 1.8s ease-out both; }
+.intro::before { content:""; position:absolute; inset:-8%; background:url("intro-background.png") center/cover no-repeat; }
+.intro img { position:relative; width:min(100%,1000px); height:auto; max-height:92dvh; object-fit:contain; mask-image:linear-gradient(to right,transparent,#000 3%,#000 97%,transparent),linear-gradient(to bottom,transparent,#000 5%,#000 94%,transparent); mask-composite:intersect; animation:intro-drift 1.8s ease-out both; }
 .intro.done { opacity:0; visibility:hidden; pointer-events:none; }
 @keyframes intro-drift { from { opacity:0; transform:translateY(14px) scale(.97); } 35% { opacity:1; } to { opacity:1; transform:translateY(0) scale(1); } }
 body.introducing .pop, body.introducing .twinkle { animation-play-state:paused; }
@@ -296,7 +297,9 @@ const GIRL = "1115,1021 1125,880 1180,790 1240,740 1255,690 1285,610 1370,588 14
     stars += '<path class="twinkle" style="animation-delay:' + (500 + (i * 83) % 700) + 'ms" transform="translate(' + p[0] + " " + p[1] + ") scale(" + big + ')" d="M0 -40L9 -9L40 0L9 9L0 40L-9 9L-40 0L-9 -9Z" fill="#fff"/>';
   });
   /* 100・240・340本の水位ライン。細い点線＋淡いにじみ、左端に小さなラベル。届いたラインは色づく */
-  const CRYSTAL = [[112, 427], [200, 249], [300, 268], [306, 235], [363, 208], [448, 79], [597, 40], [739, 83], [820, 93], [877, 43], [910, 110], [936, 137], [1021, 30], [1106, -11], [1218, -10], [1180, 75], [1115, 131], [1004, 201], [1014, 310], [1124, 185], [1268, 124], [1331, 127], [1380, 163], [1412, 244], [1468, 270], [1397, 443], [1202, 631], [1166, 702], [1021, 756], [931, 806], [745, 915], [531, 767], [400, 696], [273, 598]];
+  const CRYSTAL = [[112, 427], [200, 249], [300, 268], [306, 235], [363, 208], [448, 79], [597, 40], [739, 83], [820, 93], [877, 43], [910, 110], [920, 180], [970, 30], [1090, -15], [1220, -15], [1200, 60], [1115, 165], [1124, 185], [1268, 124], [1331, 127], [1380, 163], [1412, 244], [1468, 270], [1397, 443], [1202, 631], [1166, 702], [1021, 756], [931, 806], [745, 915], [531, 767], [400, 696], [273, 598]];
+  // 輪郭の色のにじみも未達成範囲に含める。背景と人物は元色を保つ。
+  const crystalClip = CRYSTAL.map((a,i) => { const b=CRYSTAL[(i+1)%CRYSTAL.length]; const dx=b[0]-a[0],dy=b[1]-a[1],len=Math.hypot(dx,dy); const nx=-dy/len*12,ny=dx/len*12; return `<circle cx="${a[0]}" cy="${a[1]}" r="12"/><polygon points="${[[a[0]+nx,a[1]+ny],[b[0]+nx,b[1]+ny],[b[0]-nx,b[1]-ny],[a[0]-nx,a[1]-ny]].map(p=>p.join(',')).join(' ')}"/>`; }).join('');
   const extentRight = (y) => {
     let best = null;
     for (let i = 0; i < CRYSTAL.length; i++) {
@@ -321,11 +324,11 @@ const GIRL = "1115,1021 1125,880 1180,790 1240,740 1255,690 1285,610 1370,588 14
   });
 
   svg.innerHTML =
-    '<defs><clipPath id="crystal-only"><polygon points="' + CRYSTAL.map(p => p.join(',')).join(' ') + '"/></clipPath>' +
-    '<filter id="pale" color-interpolation-filters="sRGB"><feColorMatrix type="saturate" values=".1"/><feComponentTransfer><feFuncR type="linear" slope=".8" intercept=".18"/><feFuncG type="linear" slope=".8" intercept=".18"/><feFuncB type="linear" slope=".8" intercept=".18"/></feComponentTransfer></filter>' +
+    '<defs><clipPath id="crystal-only"><polygon points="' + CRYSTAL.map(p => p.join(',')).join(' ') + '"/>' + crystalClip + '</clipPath>' +
+    '<filter id="pale" color-interpolation-filters="sRGB"><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncR type="linear" slope=".8" intercept=".18"/><feFuncG type="linear" slope=".8" intercept=".18"/><feFuncB type="linear" slope=".8" intercept=".18"/></feComponentTransfer></filter>' +
     '<filter id="soft" filterUnits="userSpaceOnUse" x="0" y="0" width="1541" height="1021"><feGaussianBlur stdDeviation="13"/></filter>' +
     '<mask id="reveal" maskUnits="userSpaceOnUse" x="0" y="0" width="1541" height="1021"><rect width="1541" height="1021" fill="#000"/>' +
-    '<g filter="url(#soft)"><polygon points="' + GIRL + '" fill="#fff"/>' + circles + '</g></mask>' +
+    '<g filter="url(#soft)">' + circles + '</g></mask>' +
     '<filter id="glint" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="3"/></filter></defs>' +
     '<image href="hero.jpg" width="1541" height="1021"/>' +
     '<image href="hero.jpg" width="1541" height="1021" filter="url(#pale)" clip-path="url(#crystal-only)"/>' +
