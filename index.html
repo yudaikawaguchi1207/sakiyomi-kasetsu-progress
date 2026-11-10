@@ -186,7 +186,7 @@ document.body.classList.add('introducing');
 /* ここの数字だけ書き換えれば、光る宝石の数と表示が変わる */
 const DATA = {
   "asOf": "11/10 時点",
-  "total": 11,
+  "total": 14,
   "goal": 340,
   "tenk": 1,
   "perGoal": 28,
@@ -196,7 +196,7 @@ const DATA = {
       "no": 1,
       "g": "pink",
       "text": "見る人が実際に困る場面を撮り、冒頭に置く",
-      "count": 3
+      "count": 5
     },
     {
       "no": 2,
@@ -250,7 +250,7 @@ const DATA = {
       "no": 10,
       "g": "green",
       "text": "伸びた投稿の冒頭や構成を残し、題材だけ替えて出す",
-      "count": 1
+      "count": 2
     },
     {
       "no": 11,
@@ -412,7 +412,7 @@ if (vacant.length) {
 
 // 添付の診断チャートの分岐と改善策番号を保持する。
 const DIAG_QUESTIONS = {
- start:{text:'スキップ率は、50%以上？',yes:'q1',no:'time'},
+ start:{text:'スキップ率は、45%以上？',yes:'q1',no:'time'},
  time:{text:'平均再生時間は、動画の長さの半分より短い？',yes:'q8',no:'q10'},
  q1:{text:'音を消して冒頭3秒を見ると、目が止まる動きや出来事がない？',yes:2,no:'q2'},
  q2:{text:'音を消して冒頭を見ても、誰のどんな困りごとか分からない？',yes:1,no:'q3'},
