@@ -126,8 +126,11 @@ h1 em { font-style: normal; color: var(--coral); }
 .legend .c b { font-family: var(--font-display); font-size: 18px; color: var(--ink); }
 .legend .zero .c b { color: #b9a9b1; }
 
+.cta-group { display: grid; gap: 12px; }
 .cta { display: block; text-align: center; text-decoration: none; background: var(--coral); color: #fff; font-weight: 900; font-size: 17px; padding: 16px 18px; border-radius: 16px; box-shadow: 0 8px 20px #f0506e40; }
 .cta:focus-visible, .cta:hover { background: var(--coral-deep); outline: 3px solid #fff; outline-offset: -6px; }
+.cta-achievement { background: #fff; color: var(--coral-deep); border: 2px solid var(--coral); box-shadow: 0 8px 20px #f0506e24; }
+.cta-achievement:focus-visible, .cta-achievement:hover { background: #fff0f4; outline-color: var(--coral-deep); }
 .foot { text-align: center; color: var(--ink-sub); font-size: 12.5px; font-weight: 700; margin: 0; }
 
 /* 宝石が1粒ずつ現れる */
@@ -273,7 +276,10 @@ body.introducing .shackle { animation-play-state:paused; }
     <a class="diag-chart-link" href="diagnosis-chart.png" target="_blank" rel="noopener" aria-label="診断チャートを開く（別タブ）">診断チャートを開く</a>
   </section>
 
-  <a class="cta" id="cta" href="#" rel="noopener">投稿したら「実施報告」</a>
+  <div class="cta-group" aria-label="報告フォーム">
+    <a class="cta" id="cta" href="#" rel="noopener">投稿したら「実施報告」</a>
+    <a class="cta cta-achievement" id="achievement-cta" href="https://liff.line.me/2001781654-oVnZcwXJ?liff_id=2001781654-oVnZcwXJ&amp;code=LFWPTZPH" rel="noopener">1万再生到達したら報告</a>
+  </div>
   <p class="foot">数字は毎日更新されます</p>
 </div>
 
@@ -294,7 +300,7 @@ document.body.classList.add('introducing');
 /* ここの数字だけ書き換えれば、光る宝石の数と表示が変わる */
 const DATA = {
   "asOf": "11/15 時点",
-  "total": 47,
+  "total": 52,
   "goal": 340,
   "tenk": 2,
   "perGoal": 28,
@@ -328,13 +334,13 @@ const DATA = {
       "no": 5,
       "g": "pink",
       "text": "冒頭で、誰に向けた何が得られる内容かを一言で伝える",
-      "count": 15
+      "count": 17
     },
     {
       "no": 6,
       "g": "pink",
       "text": "見る人が答えを考えたくなる問いや選択肢で始める",
-      "count": 3
+      "count": 4
     },
     {
       "no": 7,
@@ -358,7 +364,7 @@ const DATA = {
       "no": 10,
       "g": "green",
       "text": "伸びた投稿の冒頭や構成を残し、題材だけ替えて出す",
-      "count": 4
+      "count": 6
     },
     {
       "no": 11,
