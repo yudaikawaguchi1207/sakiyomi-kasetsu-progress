@@ -3,7 +3,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@700;800&family=Zen+Maru+Gothic:wght@500;700;900&display=swap">
 <style>
 /* 11月仮説検証キャンペーンCRのトンマナ（淡いピンクの水彩地・半透明の虹色クリスタル・コーラルの差し色）。
-   1画面目＝340個の宝石の山。実施1本につき1粒が光る／2画面目＝12個のガラス瓶。実施1本につき1粒たまり、28粒で満杯。
+   1画面目＝340個の宝石の山。実施1本につき1粒が光る／2画面目＝15個のガラス瓶。実施1本につき1粒たまり、28粒で満杯。
    冒頭=ピンク／構成=ブルー／企画=グリーンは診断チャートと同じ。明るい1テーマで完結 */
 :root {
   --bg: #fdf3f6;
@@ -95,12 +95,12 @@ h1 em { font-style: normal; color: var(--coral); }
   .campaign-flow-note { grid-column: 2; grid-row: 2; }
 }
 
-/* 2画面目：12個のガラス瓶 */
+/* 2画面目：15個のガラス瓶 */
 .sec-head { display: grid; gap: 2px; }
 .sec-head h2 { font-family: var(--font-display); font-weight: 800; font-size: 24px; margin: 0; }
 .sec-head p { margin: 0; color: var(--ink-sub); font-size: 13px; font-weight: 700; }
 .panel { background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 16px 10px 14px; box-shadow: 0 6px 24px #f0506e14; }
-.cols { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 3px; align-items: end; }
+.cols { display: grid; grid-template-columns: repeat(15, minmax(0, 1fr)); gap: 3px; align-items: end; }
 .col { display: grid; gap: 4px; justify-items: center; }
 .col .n { font-family: var(--font-display); font-weight: 800; font-size: 17px; line-height: 1; font-variant-numeric: tabular-nums; }
 .col .n.zero { color: #b9a9b1; }
@@ -109,11 +109,11 @@ h1 em { font-style: normal; color: var(--coral); }
 .col.g-pink .n:not(.zero) { color: var(--pink); }
 .col.g-blue .n:not(.zero) { color: var(--blue); }
 .col.g-green .n:not(.zero) { color: var(--green); }
-.tags { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 3px; margin-top: 6px; }
-.tags span { text-align: center; font-weight: 900; font-size: 12px; color: #fff; border-radius: 8px; padding: 1px 0; white-space: nowrap; }
-.tags .g-pink { background: var(--pink); grid-column: span 7; }
-.tags .g-blue { background: var(--blue); grid-column: span 2; }
-.tags .g-green { background: var(--green); grid-column: span 3; }
+.tags { display: grid; grid-template-columns: repeat(15, minmax(0, 1fr)); gap: 3px; margin-top: 6px; }
+.tags span { grid-column: span var(--span); text-align: center; font-weight: 900; font-size: 12px; color: #fff; border-radius: 8px; padding: 1px 0; white-space: nowrap; }
+.tags .g-pink { background: var(--pink); }
+.tags .g-blue { background: var(--blue); }
+.tags .g-green { background: var(--green); }
 .vacant { margin: 10px 0 0; background: #fff; border: 1.5px solid var(--coral); border-radius: 14px; padding: 9px 12px; font-size: 13.5px; font-weight: 700; }
 .vacant b { color: var(--coral-deep); }
 
@@ -125,22 +125,14 @@ h1 em { font-style: normal; color: var(--coral); }
 .legend .c { flex: none; font-weight: 900; font-variant-numeric: tabular-nums; color: var(--ink-sub); }
 .legend .c b { font-family: var(--font-display); font-size: 18px; color: var(--ink); }
 .legend .zero .c b { color: #b9a9b1; }
-
-/* 人数別タブで赤背景になった新しい検証パターン。既存12個の集計・瓶・診断には混ぜない。 */
-.new-patterns { display: grid; gap: 10px; margin-top: 8px; padding: 16px; background: #ffffffa8; border: 1px solid var(--line); border-radius: 18px; }
-.new-patterns h3 { margin: 0; font-family: var(--font-display); font-size: 18px; line-height: 1.4; }
-.new-patterns ul { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
-.new-pattern { display: grid; grid-template-columns: auto auto minmax(0, 1fr); align-items: center; gap: 8px; min-width: 0; padding: 10px 11px; background: #fff; border-radius: 12px; border-left: 4px solid var(--pattern-color); }
-.new-badge { display: inline-grid; place-items: center; min-height: 22px; padding: 2px 8px; border-radius: 999px; background: var(--coral); color: #fff; font-size: 10px; font-weight: 900; letter-spacing: .08em; line-height: 1; }
-.new-pattern-group { color: var(--pattern-color); font-size: 11px; font-weight: 900; white-space: nowrap; }
-.new-pattern-text { min-width: 0; font-size: 13.5px; font-weight: 700; line-height: 1.5; }
-.new-pattern.opening { --pattern-color: var(--pink); }
-.new-pattern.structure { --pattern-color: var(--blue); }
+.legend .new-badge { flex: none; display: inline-grid; place-items: center; min-height: 20px; padding: 2px 7px; border-radius: 999px; background: var(--coral); color: #fff; font-size: 9px; font-weight: 900; letter-spacing: .06em; line-height: 1; }
 @media (max-width: 420px) {
-  .new-patterns { padding: 14px 12px; }
-  .new-pattern { grid-template-columns: auto minmax(0, 1fr); }
-  .new-pattern-group { grid-column: 1; }
-  .new-pattern-text { grid-column: 2; grid-row: 1 / 3; }
+  .cols, .tags { gap: 2px; }
+  .col .n { font-size: 14px; }
+  .col .no { font-size: 9px; }
+  .tags span { font-size: 9px; }
+  .legend li { gap: 7px; padding-inline: 9px; }
+  .legend .new-badge { padding-inline: 5px; font-size: 8px; }
 }
 
 .cta-group { display: grid; gap: 12px; }
@@ -276,33 +268,19 @@ body.introducing .shackle { animation-play-state:paused; }
   </section>
 
   <section style="display:grid; gap:12px" aria-label="改善策ごとの進捗">
-    <div class="sec-head"><h2>12個の改善策</h2><p>実施1本で1粒。<span id="per"></span>粒で瓶がいっぱいになります</p></div>
+    <div class="sec-head"><h2>15個の改善策</h2><p>実施1本で1粒。<span id="per"></span>粒で瓶がいっぱいになります</p></div>
     <div class="panel">
       <div class="cols" id="cols"></div>
-      <div class="tags"><span class="g-pink">冒頭</span><span class="g-blue">構成</span><span class="g-green">企画</span></div>
+      <div class="tags">
+        <span class="g-pink" style="--span:7">冒頭</span>
+        <span class="g-blue" style="--span:2">構成</span>
+        <span class="g-green" style="--span:3">企画</span>
+        <span class="g-blue" style="--span:1">構成</span>
+        <span class="g-pink" style="--span:2">冒頭</span>
+      </div>
       <div class="vacant" id="vacant" hidden></div>
     </div>
     <ul class="legend" id="legend"></ul>
-    <section class="new-patterns" aria-labelledby="new-patterns-title">
-      <h3 id="new-patterns-title">新しく追加された検証パターン</h3>
-      <ul>
-        <li class="new-pattern structure">
-          <span class="new-badge">NEW</span>
-          <span class="new-pattern-group">構成</span>
-          <span class="new-pattern-text">冒頭で項目数を伝え、番号順に見せる</span>
-        </li>
-        <li class="new-pattern opening">
-          <span class="new-badge">NEW</span>
-          <span class="new-pattern-group">冒頭テキスト</span>
-          <span class="new-pattern-text">かかる時間や費用を、具体的な数字で冒頭に示す</span>
-        </li>
-        <li class="new-pattern opening">
-          <span class="new-badge">NEW</span>
-          <span class="new-pattern-group">冒頭ビジュアル</span>
-          <span class="new-pattern-text">冒頭1秒に完成形を見せ、工程は後に置く</span>
-        </li>
-      </ul>
-    </section>
   </section>
 
   <section class="diagnosis" aria-labelledby="diagnosis-title">
@@ -414,6 +392,27 @@ const DATA = {
       "g": "green",
       "text": "初心者だった頃の自分が知りたかったことを題材にする",
       "count": 1
+    },
+    {
+      "no": 13,
+      "g": "blue",
+      "text": "冒頭で項目数を伝え、番号順に見せる",
+      "count": 0,
+      "isNew": true
+    },
+    {
+      "no": 14,
+      "g": "pink",
+      "text": "かかる時間や費用を、具体的な数字で冒頭に示す",
+      "count": 0,
+      "isNew": true
+    },
+    {
+      "no": 15,
+      "g": "pink",
+      "text": "冒頭1秒に完成形を見せ、工程は後に置く",
+      "count": 0,
+      "isNew": true
     }
   ]
 };
@@ -515,7 +514,7 @@ const GIRL = "1115,1021 1125,880 1180,790 1240,740 1255,690 1285,610 1370,588 14
     '<g clip-path="url(#crystal-only)" filter="url(#glint)">' + stars + '</g>' + marks;
 })();
 
-/* 2画面目：12個のガラス瓶。実施1本につき、その色の宝石が1粒たまる（28粒で満杯） */
+/* 2画面目：15個のガラス瓶。実施1本につき、その色の宝石が1粒たまる（28粒で満杯） */
 const cols = $("cols"), legend = $("legend");
 const EDGE = { pink: "#ee86a6", blue: "#6fb2ee", green: "#78c577" };
 const GLASS = "M3 4H41L37 188Q36 197 28 197H16Q8 197 7 188Z";
@@ -549,7 +548,7 @@ DATA.items.forEach((it) => {
 
   const li = document.createElement("li");
   if (it.count === 0) li.className = "zero";
-  li.innerHTML = '<span class="no" style="background:' + EDGE[it.g] + '">' + it.no + '</span><span class="txt">' + esc(it.text) +
+  li.innerHTML = '<span class="no" style="background:' + EDGE[it.g] + '">' + it.no + '</span>' + (it.isNew ? '<span class="new-badge">NEW</span>' : '') + '<span class="txt">' + esc(it.text) +
     '</span><span class="c"><b>' + it.count + '</b> ／ ' + DATA.perGoal + '</span>';
   legend.appendChild(li);
 });
